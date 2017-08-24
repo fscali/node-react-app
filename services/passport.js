@@ -26,7 +26,8 @@ passport.use(
     {
       clientID: keys.googleClientID,
       clientSecret: keys.googleClientSecret,
-      callbackURL: "/auth/google/callback"
+      callbackURL: "/auth/google/callback",
+      proxy: true
     },
     //this arrow function is our opportunity to take all the information that Google gave us after authentication and store that in our DB
     (accessToken, refreshToken, profile, done) => {
