@@ -30,20 +30,17 @@ passport.use(
       proxy: true
     },
     //this arrow function is our opportunity to take all the information that Google gave us after authentication and store that in our DB
-    (accessToken, refreshToken, profile, done) => {
+    async (accessToken, refreshToken, profile, done) => {
       //access token: we can present it back to Google to show that
       // the user authenticated with us via Google and it can be used to manage his profile
-      User.findOne({ googleId: profile.id }).then(existingUser => {
-        if (!!existingUser) {
-          //we already have a record with a profile.id
+      const existingUser = await User.findOne({ googleId: profile.id });
 
-          done(null, existingUser);
-        } else {
-          new User({ googleId: profile.id }).save().then(newUser => {
-            done(null, existingUser);
-          });
-        }
-      });
+      if (!!existingUser) {
+        //we already have a record with a profile.id
+        return done(null, existingUser);
+      }
+      const newUser = await new User({ googleId: profile.id }).save();
+      done(null, user);
     }
   )
 );
