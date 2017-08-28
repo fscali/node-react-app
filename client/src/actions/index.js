@@ -14,3 +14,14 @@ export const fetchUser = () => async dispatch => {
   //inspect every action creator, and if the action creator returns a function, like this one, it will automatically
   //inject the dispatch function inside the function so that we can use it
 };
+
+export const handleToken = token => async dispatch => {
+  const res = await axios.post("/api/stripe", token);
+
+  //the backend server sends back the user model with the updated number of credits, so we can use the same action type
+  //as the fetchUser action creator
+  dispatch({
+    type: FETCH_USER,
+    payload: res.data
+  });
+};
