@@ -31,6 +31,18 @@ app.use(bodyParser.json());
 require("./routes/authRoutes")(app); //the require returns the exported function, that we call immediately with the app object
 require("./routes/billingRoutes")(app); //the require returns the exported function, that we call immediately with the app object
 
+if (process.env.NODE_ENV === "production") {
+  // if some request comes for a route that is not already contemplated above, then look for a match in the path
+  // having the route indicated below
+  app.use(express.static("client/build"));
+
+  //ultimately, if we get a request for some route that we don't understand, just serve the file index.html
+  const path = require("path");
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
+
 //Heroku can Inject environment variables, that is runtime configurations, like the PORT we are running on!
 const PORT = process.env.PORT || 5000;
 
